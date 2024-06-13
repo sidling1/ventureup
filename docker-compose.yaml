@@ -1,0 +1,82 @@
+version: '3'
+
+services:
+  nginx:
+    restart: always
+    image:
+      'nginx:latest'
+    build:
+      dockerfile: Dockerfile
+      context: ./nginx
+    ports:
+      - "3050:80"
+    depends_on:
+      - api
+      - client
+    networks:
+      backend_network:
+        ipv4_address: 192.168.0.23
+    tty: true
+
+  api:
+    build:
+      dockerfile: Dockerfile
+      context: ./backend
+    volumes:
+      - '/app/node_modules'
+      - './backend:/app'
+    environment:
+      - SET_SOME_STUFF=okay
+    ports:
+      - "5000:5000"
+    networks:
+      backend_network:
+        ipv4_address: 192.168.0.22
+    tty: true
+
+  client:
+    build:
+      dockerfile: Dockerfile
+      context: ./frontend
+    volumes:
+      - '/app/node_modules'
+      - './frontend:/app'
+    command: npm run start
+    tty: true
+    ports:
+      - "3000:3000"
+    networks:
+      backend_network:
+        ipv4_address: 192.168.0.21
+
+  db:
+    image: postgres
+    restart: always
+    # set shared memory limit when using docker-compose
+    shm_size: 128mb
+    # or set shared memory limit when deploy via swarm stack
+    #volumes:
+    #  - type: tmpfs
+    #    target: /dev/shm
+    #    tmpfs:
+    #      size: 134217728 # 128*2^20 bytes = 128Mb
+    ports:
+      - "5432:5432"
+    environment:
+      PGHOST: '0.0.0.0'
+      POSTGRES_USER: 'username'
+      POSTGRES_PASSWORD: 'password'
+    volumes:
+      - ./postgres_data:/var/lib/postgresql/data
+    networks:
+      backend_network:
+        ipv4_address: 192.168.0.20
+
+
+networks:
+  backend_network:
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 192.168.0.0/24
