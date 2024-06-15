@@ -50,3 +50,30 @@ exports.uploadNewResource = async (req,res)=>{
         })
     }
 }
+
+// View / Get reources Functionality
+exports.getResourcefromId = async (req,res) =>{
+    const data = req.body;
+
+    const res_id = data.res_id;
+
+    try {
+        const { rows } = await db.query("SELECT * FROM resources WHERE resource_id = $1", [res_id]);
+        console.log(rows);
+
+        if(rows.length != 1){
+            console.error("Duplicate Resources Detected, Server Error !!!!!!");
+            return res.status(500).json({
+                error: "Server/Database Error",
+            })
+        }
+
+        // Assuming there is only one row because of unique constraint in the database
+        return res.status(200).json(rows[0]);
+    } catch (error) {
+        console.error('Invalid token', error);
+        return res.status(500).json({
+            error: error.message,
+        })
+    }
+}

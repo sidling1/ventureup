@@ -1,5 +1,8 @@
 const { Router } = require('express')
-const { uploadNewResource } = require('../controllers/resource')
+const { 
+    uploadNewResource,
+    getResourcefromId
+} = require('../controllers/resource')
 // const {
 //     getUserInfo,
 //     getSavedResources
@@ -9,6 +12,7 @@ const router = Router()
 
 // router.get('/info',getUserInfo)
 // router.get('/saved-resources',getSavedResources)
-router.post('/upload',uploadNewResource);
+router.post('/upload', uploadNewResource);
+router.get('/info', getResourcefromId);
 
 module.exports = router
