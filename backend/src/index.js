@@ -4,6 +4,7 @@ const { PORT, CLIENT_URL } = require('./constants')
 const cookieParser = require('cookie-parser')
 const passport = require('passport')
 const cors = require('cors')
+const { userAuth } = require('./middlewares/auth-middleware')
 
 //import passport middleware
 require('./middlewares/passport-middleware')
@@ -16,9 +17,11 @@ app.use(passport.initialize())
 
 //import routes
 const authRoutes = require('./routes/auth')
+const userRoutes = require('./routes/users')
 
 //initialize routes
 app.use('/api', authRoutes)
+app.use('/user',userAuth, userRoutes)
 
 //app start
 const appStart = () => {

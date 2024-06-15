@@ -45,6 +45,7 @@ exports.login = async (req, res) => {
   let payload = {
     id: user.user_id,
     email: user.email,
+    // username: user.username
   }
 
   try {
