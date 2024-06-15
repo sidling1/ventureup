@@ -8,6 +8,6 @@ RUN npm install
 COPY . .
 #RUN node server.js;
 
-CMD ["npm", "run", "start"]
+# CMD ["npm", "run", "start"]
 
-#CMD ["tail", "-f", "/dev/null"]
+CMD ["tail", "-f", "/dev/null"]
