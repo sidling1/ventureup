@@ -4,3 +4,7 @@ exports.getUserInfo = async (req, res)=>{
         success: "Sending User Information"
     })
 }
+
+exports.getSavedResources = async (req,res)=>{
+    
+}

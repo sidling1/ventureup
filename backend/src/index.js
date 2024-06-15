@@ -4,6 +4,8 @@ const { PORT, CLIENT_URL } = require('./constants')
 const cookieParser = require('cookie-parser')
 const passport = require('passport')
 const cors = require('cors')
+
+// Use user auth wherever you need to check if the user if logged in
 const { userAuth } = require('./middlewares/auth-middleware')
 
 //import passport middleware
@@ -18,10 +20,13 @@ app.use(passport.initialize())
 //import routes
 const authRoutes = require('./routes/auth')
 const userRoutes = require('./routes/users')
+const resourceRoutes = require('./routes/resource')
 
 //initialize routes
 app.use('/api', authRoutes)
-app.use('/user',userAuth, userRoutes)
+app.use('/api/user',userAuth, userRoutes)
+
+app.use('/api/resource',resourceRoutes)
 
 //app start
 const appStart = () => {

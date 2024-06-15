@@ -1,3 +1,3 @@
 const passport = require('passport')
 
-exports.userAuth = passport.authenticate('jwt', { session: false })
+exports.userAuth = passport.authenticate('jwt', { session: false }) // We can modify this authenticaton to consider having the userId and all with the SECRET we have set etc ...

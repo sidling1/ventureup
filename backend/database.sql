@@ -31,6 +31,13 @@ CREATE TABLE Resources (
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
+CREATE TABLE SavedResources (
+    resource_id INT,
+    user_id INT,
+    FOREIGN KEY (user_id) REFERENCES Users(user_id),
+    FOREIGN KEY (resource_id) REFERENCES Resources(resource_id)
+);
+
 CREATE TABLE Comments (
     comment_id SERIAL PRIMARY KEY,
     resource_id INT,
