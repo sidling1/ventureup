@@ -58,18 +58,27 @@ exports.getResourcefromId = async (req,res) =>{
     const res_id = data.res_id;
 
     try {
-        const { rows } = await db.query("SELECT * FROM resources WHERE resource_id = $1", [res_id]);
-        console.log(rows);
+        // got the resource information
+        const { rows : Resource } = await db.query("SELECT * FROM resources WHERE resource_id = $1", [res_id]);
+        console.log(Resource);
 
-        if(rows.length != 1){
+        if(Resource.length != 1){
             console.error("Duplicate Resources Detected, Server Error !!!!!!");
             return res.status(500).json({
                 error: "Server/Database Error",
             })
         }
 
+        // retrieve all the comments
+        const { rows: Comments } = await db.query("SELECT * FROM comments WHERE resource_id = $1 ORDER BY created_at DESC", [res_id]);
+
+        const Ret = {
+            ...Resource[0],
+            comments: Comments
+        }
+
         // Assuming there is only one row because of unique constraint in the database
-        return res.status(200).json(rows[0]);
+        return res.status(200).json(Ret);
     } catch (error) {
         console.error('Invalid token', error);
         return res.status(500).json({
