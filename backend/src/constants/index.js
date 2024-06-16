@@ -1,4 +1,5 @@
 const { config } = require('dotenv')
+const jwt = require('jsonwebtoken');
 config()
 
 module.exports = {
@@ -8,3 +9,4 @@ module.exports = {
   CLIENT_URL: process.env.CLIENT_URL,
   SECRET: process.env.SECRET,
 }
+

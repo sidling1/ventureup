@@ -16,6 +16,7 @@
 const jwt = require('jsonwebtoken');
 const db = require('../db');
 const { SECRET } = require('../constants');
+const { TokenToUser } = require('../utility');
 
 exports.uploadNewResource = async (req,res)=>{
     const data = req.body;
@@ -72,9 +73,12 @@ exports.getResourcefromId = async (req,res) =>{
         // retrieve all the comments
         const { rows: Comments } = await db.query("SELECT * FROM comments WHERE resource_id = $1 ORDER BY created_at DESC", [res_id]);
 
+        const { rows : Likes } = await db.query("SELECT count(*) FROM likes WHERE resource_id = $1",[res_id])
+
         const Ret = {
             ...Resource[0],
-            comments: Comments
+            comments: Comments,
+            likes: Likes[0].count
         }
 
         // Assuming there is only one row because of unique constraint in the database
@@ -86,3 +90,70 @@ exports.getResourcefromId = async (req,res) =>{
         })
     }
 }
+
+// Post: Like the resource with res_id
+exports.likeResource = async(req, res) => {
+    const data = req.body;
+
+    const res_id = data.res_id;
+
+    try {
+        const token = req.cookies['token'];
+        // const decodedToken = jwt.verify(token, SECRET);
+        const userId = TokenToUser(token);
+        console.log(userId);
+
+        if(userId == -1){
+            return res.status(500).json({
+                error: "Unkown Error Occured (User not found)"
+            })
+        }
+
+        await db.query("INSERT INTO likes(resource_id, user_id) VALUES ($1, $2) ON CONFLICT (resource_id, user_id) DO NOTHING;",[res_id, userId])
+
+        // Assuming there is only one row because of unique constraint in the database
+        return res.status(200).json({
+            success: true,
+            message: "Resource Added to Liked Resources"
+        })
+    } catch (error) {
+        console.error('Invalid token', error);
+        return res.status(500).json({
+            error: error.message,
+        })
+    }
+}
+
+// Delete: Delete the like
+exports.unlikeResource = async (req, res) => {
+    const data = req.body;
+
+    const res_id = data.res_id;
+
+    try {
+        const token = req.cookies['token'];
+        // const decodedToken = jwt.verify(token, SECRET);
+        const userId = TokenToUser(token);
+        console.log(userId);
+
+        if(userId == -1){
+            return res.status(500).json({
+                error: "Unkown Error Occured (User not found)"
+            })
+        }
+
+        await db.query("DELETE FROM likes WHERE resource_id = $1 AND user_id = $2",[res_id, userId])
+
+        // Assuming there is only one row because of unique constraint in the database
+        return res.status(200).json({
+            success: true,
+            message: "Resource Delete From Liked Resources"
+        })
+    } catch (error) {
+        console.error('Invalid token', error);
+        return res.status(500).json({
+            error: error.message,
+        })
+    }
+}
+

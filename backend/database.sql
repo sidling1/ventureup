@@ -48,6 +48,16 @@ CREATE TABLE Comments (
     FOREIGN KEY (user_id) REFERENCES Users(user_id)
 );
 
+CREATE TABLE Likes (
+    resource_id INT,
+    user_id INT,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    PRIMARY KEY (resource_id, user_id),
+    FOREIGN KEY (resource_id) REFERENCES Resources(resource_id),
+    FOREIGN KEY (user_id) REFERENCES Users(user_id)
+);
+
+
 CREATE TYPE utype AS ENUM('mentor', 'investor');
 
 CREATE TABLE MentorsInvestors (
