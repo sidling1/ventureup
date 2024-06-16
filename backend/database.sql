@@ -34,6 +34,7 @@ CREATE TABLE Resources (
 CREATE TABLE SavedResources (
     resource_id INT,
     user_id INT,
+    PRIMARY KEY (resource_id, user_id),
     FOREIGN KEY (user_id) REFERENCES Users(user_id),
     FOREIGN KEY (resource_id) REFERENCES Resources(resource_id)
 );

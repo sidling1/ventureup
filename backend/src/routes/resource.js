@@ -3,7 +3,9 @@ const {
     uploadNewResource,
     getResourcefromId,
     likeResource,
-    unlikeResource
+    unlikeResource,
+    saveResource,
+    removeSavedResource
 } = require('../controllers/resource')
 // const {
 //     getUserInfo,
@@ -18,5 +20,7 @@ router.post('/upload', uploadNewResource);
 router.get('/info', getResourcefromId);
 router.post('/like', likeResource);
 router.delete('/unlike', unlikeResource);
+router.post('/save', saveResource);
+router.delete('/removesaved', removeSavedResource);
 
 module.exports = router

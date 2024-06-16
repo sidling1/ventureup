@@ -75,10 +75,13 @@ exports.getResourcefromId = async (req,res) =>{
 
         const { rows : Likes } = await db.query("SELECT count(*) FROM likes WHERE resource_id = $1",[res_id])
 
+        const { rows: Saved } = await db.query("SELECT count(*) FROM SavedResources WHERE resource_id = $1", [res_id])
+
         const Ret = {
             ...Resource[0],
             comments: Comments,
-            likes: Likes[0].count
+            likes: Likes[0].count,
+            savedBy: Saved[0].count
         }
 
         // Assuming there is only one row because of unique constraint in the database
@@ -157,3 +160,67 @@ exports.unlikeResource = async (req, res) => {
     }
 }
 
+// Similar to Like Unlike ig, just the difference is different table are begin used ?
+exports.saveResource = async (req, res) =>{
+    const data = req.body;
+
+    const res_id = data.res_id;
+
+    try {
+        const token = req.cookies['token'];
+        // const decodedToken = jwt.verify(token, SECRET);
+        const userId = TokenToUser(token);
+        console.log(userId);
+
+        if(userId == -1){
+            return res.status(500).json({
+                error: "Unkown Error Occured (User not found)"
+            })
+        }
+
+        await db.query("INSERT INTO SavedResources(resource_id, user_id) VALUES ($1, $2) ON CONFLICT (resource_id, user_id) DO NOTHING;",[res_id, userId])
+
+        // Assuming there is only one row because of unique constraint in the database
+        return res.status(200).json({
+            success: true,
+            message: "Resource Added to Saved Resources"
+        })
+    } catch (error) {
+        console.error('Invalid token', error);
+        return res.status(500).json({
+            error: error.message,
+        })
+    }
+}
+
+exports.removeSavedResource = async (req, res) =>{
+    const data = req.body;
+
+    const res_id = data.res_id;
+
+    try {
+        const token = req.cookies['token'];
+        // const decodedToken = jwt.verify(token, SECRET);
+        const userId = TokenToUser(token);
+        console.log(userId);
+
+        if(userId == -1){
+            return res.status(500).json({
+                error: "Unkown Error Occured (User not found)"
+            })
+        }
+
+        await db.query("DELETE FROM SavedResources WHERE resource_id = $1 AND user_id = $2",[res_id, userId])
+
+        // Assuming there is only one row because of unique constraint in the database
+        return res.status(200).json({
+            success: true,
+            message: "Resource Delete From Saved Resources"
+        })
+    } catch (error) {
+        console.error('Invalid token', error);
+        return res.status(500).json({
+            error: error.message,
+        })
+    }
+}
