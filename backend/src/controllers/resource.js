@@ -224,3 +224,6 @@ exports.removeSavedResource = async (req, res) =>{
         })
     }
 }
+
+
+// Sharing Resource Functionality -> how to implement ?

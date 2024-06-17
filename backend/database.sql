@@ -14,7 +14,7 @@ CREATE TABLE Users (
 
 CREATE TABLE Profiles (
     profile_id SERIAL PRIMARY KEY,
-    user_id INT,
+    user_id INT UNIQUE,
     bio TEXT,
     profile_picture VARCHAR(255),
     FOREIGN KEY (user_id) REFERENCES Users(user_id)

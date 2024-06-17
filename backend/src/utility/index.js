@@ -3,13 +3,13 @@ const jwt = require('jsonwebtoken');
 
 exports.TokenToUser = (token) => {
     try{
-        console.log(token)
+      console.log(token)
       const decodedToken = jwt.verify(token, SECRET);
       const userId = decodedToken.id;
       console.log(userId);
       return userId;
     }catch (e){
         console.log(e)
-      return -1;
+        throw e
     }
 }
