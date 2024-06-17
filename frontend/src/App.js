@@ -1,11 +1,11 @@
 import React , { Fragment } from "react";
 import Init from "./Components/Init";
-import './App.css';
+import Signup from "./Components/Signup";
 
 function App() {
   return (
     <Fragment>
-      <Init/>
+      <Signup/>
     </Fragment>
   );
 }

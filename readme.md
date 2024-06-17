@@ -13,3 +13,4 @@
 2.  Google News API - https://developers.google.com/custom-search/v1/overview
 3.  NY Times API - https://developer.nytimes.com/apis
 
+REACT_APP_SERVER_URI='http://localhost:5000/api'
