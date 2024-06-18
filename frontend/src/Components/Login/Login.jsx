@@ -1,37 +1,39 @@
 import React, { useState } from "react";
 import color from '../../Styles/colour.module.css';
 import fonts from '../../Styles/fonts.module.css';
-import styles from './signup.module.css';
-import { useNavigate, Link } from "react-router-dom";
+import styles from './login.module.css';
+import {Link, useNavigate} from 'react-router-dom';
 
-function Signup() {
+function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+
   const navigate = useNavigate();
 
-  const handleCreateAccount = async()=>{
+  const handleLoginAccount = async()=>{
     const SERVER_URI = process.env.REACT_APP_SERVER_URI;
     const data = {
       email: email,
       password: password
     }
 
-    const res = await fetch(`${SERVER_URI}/register`,{
+    const res = await fetch(`${SERVER_URI}/login`,{
       method:"POST",
-      mode:"cors",
-      headers:{
-        "Content-Type":"application/json",
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
       },
       body: JSON.stringify(data),
+      credentials: 'include',
     })
 
     console.log(res)
-    if(res.status === 201){
-      console.log("Account Successfully Created, go to /login page")
-      navigate('/login')
+    if(res.status === 200){
+      console.log("Account Successfully Logged In, go to /home page")
+      console.log()
+      navigate('/home')
     }else if(res.status === 400){
       console.log("Error Occured, Account Not Created.")
-      navigate('/signup')
     }
 
   }
@@ -39,8 +41,8 @@ function Signup() {
   return (
     <>
       <div className={`${color.white_b} ${styles.container}`}>
-        <div className={`${fonts.heading}`}>Create Account</div>
-        <div className={`${color.grey_f}`}>Have an Account ? <Link to="/login" className={`${color.blue_f}`}> Sign In </Link></div>
+        <div className={`${fonts.heading}`}>Sign In</div>
+        <div className={`${color.grey_f}`}>New to ventureup ? <Link to="/signup" className={`${color.blue_f}`}> Create an Account </Link></div>
         
         <div style={{width: "80%"}}>
           <div className={`${styles.form_element}`}>
@@ -67,16 +69,16 @@ function Signup() {
           <button 
           type="submit" 
           className={`${styles.button} ${color.blue_b}`}
-          onClick={handleCreateAccount}
-          >Create Account</button>
+          onClick={handleLoginAccount}
+          >Sign In</button>
         </div>
-        <div className={`${color.grey_f}`} style={{fontSize: "small"}}>By Creating account, you agree to our <a href="#" className={`${color.blue_f}`}>Terms of Service</a></div>
+        <div className={`${color.grey_f}`} style={{fontSize: "small"}}><a href="#" className={`${color.blue_f}`}>Forgot your Password ?</a></div>
         <hr className={`${styles.hline}`}/>
-        <div className={`${color.grey_f}`} style={{fontSize: "small"}}>or Create an account using :</div>
+        <div className={`${color.grey_f}`} style={{fontSize: "small"}}>or Sign in using :</div>
         {/* Google Sign In options available here */}
       </div>
     </>
   );
 }
 
-export default Signup;
+export default Login;
